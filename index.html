@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Electric Tab AI - 电吉他自动扒谱</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace">
+        <div class="brand">
+          <span class="mark">ET</span>
+          <div>
+            <h1>Electric Tab AI</h1>
+            <p>上传音频或 MP4，自动分析主旋律并生成电吉他 TAB 谱。</p>
+          </div>
+        </div>
+
+        <section class="upload-panel" aria-label="音频上传">
+          <input id="fileInput" type="file" accept="audio/*,video/mp4,.mp4,.m4a,.wav,.mp3,.aac,.ogg" />
+          <label class="drop-zone" for="fileInput" id="dropZone">
+            <span class="upload-icon">+</span>
+            <span class="upload-title">选择或拖入音频 / MP4 文件</span>
+            <span class="upload-hint">支持常见浏览器可解码的 mp3、wav、m4a、aac、ogg、mp4</span>
+          </label>
+          <audio id="player" controls></audio>
+          <div class="status-line">
+            <span id="statusText">等待上传文件</span>
+            <span id="fileMeta"></span>
+          </div>
+        </section>
+
+        <section class="controls" aria-label="分析设置">
+          <label>
+            <span>灵敏度</span>
+            <input id="sensitivity" type="range" min="0.2" max="0.9" value="0.46" step="0.02" />
+          </label>
+          <label>
+            <span>最短音符</span>
+            <select id="minDuration">
+              <option value="0.12">快速独奏</option>
+              <option value="0.18" selected>均衡</option>
+              <option value="0.28">稳定节奏</option>
+            </select>
+          </label>
+          <label>
+            <span>最高把位</span>
+            <input id="maxFret" type="number" min="12" max="24" value="22" />
+          </label>
+          <button id="analyzeButton" type="button" disabled>开始扒谱</button>
+        </section>
+
+        <section class="metrics" aria-label="分析结果">
+          <article>
+            <span id="noteCount">0</span>
+            <p>识别音符</p>
+          </article>
+          <article>
+            <span id="durationText">0s</span>
+            <p>音频时长</p>
+          </article>
+          <article>
+            <span id="rangeText">--</span>
+            <p>音域范围</p>
+          </article>
+          <article>
+            <span id="confidenceText">0%</span>
+            <p>平均置信度</p>
+          </article>
+        </section>
+      </section>
+
+      <section class="result-panel">
+        <div class="tabs-header">
+          <div>
+            <h2>生成的电吉他 TAB</h2>
+            <p>标准调弦 E A D G B e，自动选择更靠近中低把位的指法。</p>
+          </div>
+          <div class="actions">
+            <button id="copyButton" type="button" disabled>复制</button>
+            <button id="downloadTabButton" type="button" disabled>下载 TAB</button>
+            <button id="downloadJsonButton" type="button" disabled>下载 JSON</button>
+          </div>
+        </div>
+        <pre id="tabOutput" class="tab-output">上传文件后，TAB 谱会显示在这里。</pre>
+      </section>
+
+      <section class="note-table" aria-label="音符列表">
+        <div class="table-title">
+          <h2>音符明细</h2>
+          <p>用于检查 AI 分析结果，也方便你手动微调谱子。</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>时间</th>
+                <th>音名</th>
+                <th>频率</th>
+                <th>弦</th>
+                <th>品</th>
+                <th>置信度</th>
+              </tr>
+            </thead>
+            <tbody id="notesBody">
+              <tr>
+                <td colspan="6">暂无数据</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
